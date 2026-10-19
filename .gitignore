@@ -8,6 +8,7 @@ dist/
 *.user
 *.suo
 .launchpad/
+.workbuddy/
 .playwright-mcp/
 UI-DESIGN.md
 UI-IMPROVEMENTS.md
