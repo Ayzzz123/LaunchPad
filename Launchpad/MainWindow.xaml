@@ -1,0 +1,116 @@
+<Window x:Class="Launchpad.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
+        Title="Launchpad Host" Width="1080" Height="720" WindowStyle="None" ResizeMode="NoResize"
+        AllowsTransparency="False" Background="Transparent" ShowInTaskbar="False" ShowActivated="False" Topmost="True"
+        FontFamily="Segoe UI, Microsoft YaHei UI" Foreground="{DynamicResource TextPrimary}"
+        Deactivated="Window_Deactivated" SizeChanged="Window_SizeChanged" PreviewKeyDown="Window_PreviewKeyDown">
+    <shell:WindowChrome.WindowChrome><shell:WindowChrome CaptionHeight="0" ResizeBorderThickness="0" GlassFrameThickness="-1" UseAeroCaptionButtons="False"/></shell:WindowChrome.WindowChrome>
+    <Window.Resources><ResourceDictionary><ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="Resources/GlassTheme.xaml"/>
+    </ResourceDictionary.MergedDictionaries></ResourceDictionary></Window.Resources>
+    <Grid x:Name="Root" Background="Transparent" Focusable="True" FocusVisualStyle="{x:Null}" MouseLeftButtonDown="Root_MouseLeftButtonDown" PreviewMouseWheel="Root_PreviewMouseWheel">
+        <Border x:Name="GlassSurface" IsHitTestVisible="False" Background="#DDEDF1F6" BorderBrush="{DynamicResource ControlBorder}" BorderThickness="1"/>
+        <Grid x:Name="AnimatedContent" RenderTransformOrigin=".5,.5">
+            <Grid.RenderTransform><ScaleTransform ScaleX=".975" ScaleY=".975"/></Grid.RenderTransform>
+            <Grid x:Name="HomePage" Margin="34,26,34,18">
+                <Grid.RowDefinitions><RowDefinition Height="58"/><RowDefinition Height="46"/><RowDefinition Height="*"/><RowDefinition Height="38"/></Grid.RowDefinitions>
+                <Grid x:Name="SearchHeader">
+                    <StackPanel x:Name="Brand" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False">
+                        <TextBlock Text="LaunchPad" HorizontalAlignment="Center" FontSize="18" FontWeight="SemiBold"/>
+                    </StackPanel>
+                    <Border x:Name="SearchPanel" Width="360" Height="46" CornerRadius="15" BorderThickness="1" HorizontalAlignment="Center" Cursor="IBeam" MouseLeftButtonDown="SearchPanel_MouseLeftButtonDown">
+                        <Border.Style><Style TargetType="Border">
+                            <Setter Property="Background" Value="{DynamicResource InputSurface}"/>
+                            <Setter Property="BorderBrush" Value="{DynamicResource InputBorder}"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True"><Setter Property="BorderBrush" Value="{DynamicResource TextSecondary}"/></Trigger>
+                            </Style.Triggers>
+                        </Style></Border.Style>
+                        <Grid Margin="14,0,10,0">
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="25"/><ColumnDefinition Width="*"/><ColumnDefinition Width="25"/></Grid.ColumnDefinitions>
+                            <Path Data="M 11,1 A 10,10 0 1 0 11,21 A 10,10 0 1 0 11,1 M 18,18 L 25,25" Width="16" Height="16" Stretch="Uniform" Stroke="{DynamicResource TextSecondary}" StrokeThickness="1.8" VerticalAlignment="Center"/>
+                            <TextBox x:Name="SearchBox" Grid.Column="1" Background="Transparent" Foreground="{DynamicResource TextPrimary}" CaretBrush="{DynamicResource Accent}" SelectionBrush="{DynamicResource Accent}" Cursor="IBeam" BorderThickness="0" FontSize="14" Padding="2,0" VerticalContentAlignment="Center" TextChanged="SearchBox_TextChanged" PreviewKeyDown="SearchBox_PreviewKeyDown" AutomationProperties.Name="搜索应用、文件与文件夹"/>
+                            <TextBlock x:Name="SearchPlaceholder" Grid.Column="1" Text="搜索应用、文件与文件夹" FontSize="14" Foreground="{DynamicResource TextSecondary}" Margin="2,0,0,0" VerticalAlignment="Center" IsHitTestVisible="False"/>
+                            <Button x:Name="ClearSearchButton" Grid.Column="2" Style="{StaticResource QuietButton}" Padding="0" BorderThickness="0" Background="Transparent" Content="×" FontSize="18" Visibility="Collapsed" Click="ClearSearch_Click" ToolTip="清空搜索" AutomationProperties.Name="清空搜索"/>
+                        </Grid>
+                    </Border>
+                    <StackPanel x:Name="HomeActions" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                        <Button x:Name="AddButton" Style="{StaticResource QuietButton}" Tag="NeutralFocus" Click="AddApps_Click" Padding="11" Margin="0,0,6,0" ToolTip="添加项目" AutomationProperties.Name="添加项目"><Path Data="M 8,1 L 8,15 M 1,8 L 15,8" Width="15" Height="15" Stroke="{DynamicResource TextSecondary}" StrokeThickness="1.7"/></Button>
+                        <Button x:Name="EditButton" Style="{StaticResource QuietButton}" Tag="NeutralFocus" Click="Edit_Click" Padding="12,10" Margin="0,0,6,0" Content="整理"/>
+                        <Button Style="{StaticResource QuietButton}" Click="Settings_Click" Padding="11" ToolTip="设置" AutomationProperties.Name="设置"><Path Data="M 1,4 L 17,4 M 1,10 L 17,10 M 1,16 L 17,16 M 6,1 L 6,7 M 12,7 L 12,13 M 7,13 L 7,19" Width="17" Height="17" Stretch="Uniform" Stroke="{DynamicResource TextSecondary}" StrokeThickness="1.6"/></Button>
+                    </StackPanel>
+                </Grid>
+                <Grid Grid.Row="1" VerticalAlignment="Center" Margin="10,0"><TextBlock x:Name="SectionTitle" Visibility="Collapsed" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondary}"/><TextBlock x:Name="SectionHint" FontSize="11" Foreground="{DynamicResource TextSecondary}" HorizontalAlignment="Right"/></Grid>
+                <Grid x:Name="GridArea" Grid.Row="2" Background="Transparent" SizeChanged="GridArea_SizeChanged">
+                    <UniformGrid x:Name="TilesGrid" Columns="7" Rows="4"/>
+                    <StackPanel x:Name="EmptyStatePanel" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed">
+                        <Border Width="86" Height="86" Background="{DynamicResource ControlSurface}" CornerRadius="26" HorizontalAlignment="Center" Margin="0,0,0,22"><Path Data="M 1,1 L 12,1 12,12 1,12 Z M 19,1 L 30,1 30,12 19,12 Z M 1,19 L 12,19 12,30 1,30 Z M 19,19 L 30,19 30,30 19,30 Z" Width="32" Height="32" Stretch="Uniform" Fill="{DynamicResource TextSecondary}"/></Border>
+                        <TextBlock x:Name="EmptyState" Text="把喜欢的应用放在这里" FontSize="22" FontWeight="SemiBold" TextAlignment="Center"/>
+                        <TextBlock x:Name="EmptyHint" Text="只显示你亲自添加的应用，让桌面更清爽。" FontSize="13" Margin="0,12,0,24" Foreground="{DynamicResource TextSecondary}" TextAlignment="Center"/>
+                        <Button x:Name="EmptyManageButton" Style="{StaticResource PrimaryButton}" Content="添加第一个项目" Click="AddApps_Click" HorizontalAlignment="Center" Padding="24,12"/>
+                    </StackPanel>
+                </Grid>
+                <Grid Grid.Row="3"><StackPanel x:Name="PageDots" IsHitTestVisible="False" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center"/></Grid>
+            </Grid>
+            <Grid x:Name="SettingsPage" Margin="32,28" Visibility="Collapsed">
+                <Grid.RowDefinitions><RowDefinition Height="64"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Top"><Button Style="{StaticResource QuietButton}" Content="←  返回" Click="BackHome_Click" Margin="0,0,18,0"/><TextBlock Text="设置" FontSize="23" FontWeight="SemiBold" VerticalAlignment="Center"/></StackPanel>
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="174"/><ColumnDefinition Width="24"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                    <Border Background="{DynamicResource SidebarSurface}" CornerRadius="18" Padding="10"><StackPanel>
+                        <Button x:Name="AppsTab" Style="{StaticResource QuietButton}" Content="项目管理" Click="AppsTab_Click" Margin="0,0,0,6"/>
+                        <Button x:Name="HotkeyTab" Style="{StaticResource QuietButton}" Content="快捷键" Click="HotkeyTab_Click"/>
+                        <TextBlock Text="Launchpad" Foreground="{DynamicResource TextSecondary}" FontSize="11" Margin="12,30,0,0"/><TextBlock x:Name="AppearanceHint" Text="跟随系统" Foreground="{DynamicResource TextSecondary}" FontSize="10" Margin="12,6,0,0"/>
+                    </StackPanel></Border>
+                    <Border x:Name="AppsSettingsCard" Grid.Column="2" CornerRadius="20" Background="{DynamicResource PanelSurface}" BorderBrush="{DynamicResource ControlBorder}" BorderThickness="1" Padding="24">
+                        <Grid x:Name="AppsSettings"><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                            <Grid Margin="0,0,0,20"><StackPanel><TextBlock Text="你的项目" FontSize="20" FontWeight="SemiBold"/><TextBlock x:Name="ManageCount" FontSize="12" Foreground="{DynamicResource TextSecondary}" Margin="0,8,0,0"/></StackPanel><Button Style="{StaticResource PrimaryButton}" Content="＋ 添加" Click="AddApps_Click" HorizontalAlignment="Right" VerticalAlignment="Center"/></Grid>
+                            <ScrollViewer Grid.Row="1" Style="{StaticResource AppListScrollViewer}"><StackPanel x:Name="ManagedApps"/></ScrollViewer>
+                        </Grid>
+                    </Border>
+                    <Border x:Name="HotkeySettings" Grid.Column="2" CornerRadius="20" Background="{DynamicResource PanelSurface}" Padding="30" Visibility="Collapsed"><StackPanel>
+                        <TextBlock Text="随时唤起你的项目" FontSize="21" FontWeight="SemiBold"/><TextBlock Text="按一次打开，再按一次收起。" Foreground="{DynamicResource TextSecondary}" Margin="0,10,0,32"/>
+                        <CheckBox x:Name="EnableHotkey" Content="启用全局快捷键" FontSize="14" IsChecked="True" Margin="0,0,0,20" Checked="EnableHotkey_Changed" Unchecked="EnableHotkey_Changed"/>
+                        <TextBlock Text="点击下方按键区域，输入新的组合键" Foreground="{DynamicResource TextSecondary}" FontSize="12" Margin="0,0,0,10"/>
+                        <Button x:Name="HotkeyCapture" Content="Alt+Space" Click="CaptureHotkey_Click" Style="{StaticResource QuietButton}" HorizontalAlignment="Left" MinWidth="200" Padding="22,16" FontSize="19"/>
+                        <TextBlock x:Name="HotkeyError" TextWrapping="Wrap" Foreground="{DynamicResource Error}" Margin="0,14,0,0"/>
+                        <Button Content="保存快捷键" Style="{StaticResource PrimaryButton}" Click="SaveHotkey_Click" HorizontalAlignment="Left" Margin="0,24,0,0"/>
+                        <TextBlock Text="快捷键不可用时，仍可通过系统托盘打开。" FontSize="11" Foreground="{DynamicResource TextSecondary}" Margin="0,24,0,0" TextWrapping="Wrap"/>
+                    </StackPanel></Border>
+                </Grid>
+            </Grid>
+            <Grid x:Name="FolderOverlay" Visibility="Collapsed">
+                <Border Background="#300F1B31" MouseLeftButtonDown="FolderBackdrop_Click" AllowDrop="True" DragOver="FolderReturnButton_DragOver" Drop="FolderReturnButton_Drop"/>
+                <Border x:Name="FolderPanel" Width="720" MaxHeight="530" Margin="30" VerticalAlignment="Center" Background="{DynamicResource FolderSurface}" CornerRadius="26" BorderBrush="{DynamicResource ControlBorder}" BorderThickness="1" Padding="28"><Grid>
+                    <Grid.RowDefinitions><RowDefinition Height="54"/><RowDefinition Height="*"/><RowDefinition Height="32"/></Grid.RowDefinitions>
+                    <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                        <Button Style="{StaticResource QuietButton}" Content="←" Padding="12,8" Margin="0,0,12,12" Click="FolderReturnButton_Click" AllowDrop="True" DragOver="FolderReturnButton_DragOver" Drop="FolderReturnButton_Drop" ToolTip="返回；拖到这里移出文件夹"/>
+                        <TextBox x:Name="FolderNameInput" Grid.Column="1" Background="Transparent" BorderThickness="0" FontSize="20" FontWeight="SemiBold" Padding="3,5" TextChanged="FolderNameInput_TextChanged" AutomationProperties.Name="文件夹名称"/>
+                        <Button x:Name="FolderEditButton" Grid.Column="2" Content="整理" Style="{StaticResource QuietButton}" Tag="NeutralFocus" Padding="12,8" Margin="0,0,0,12" Click="Edit_Click"/>
+                    </Grid>
+                    <UniformGrid x:Name="FolderTilesGrid" Background="Transparent" Grid.Row="1" Columns="5" Rows="3" Height="360"/>
+                    <Grid Grid.Row="2"><StackPanel x:Name="FolderPageDots" IsHitTestVisible="False" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top"/><TextBlock Text="拖到面板外，移回启动台" Foreground="{DynamicResource TextSecondary}" FontSize="10" VerticalAlignment="Bottom" HorizontalAlignment="Right"/></Grid>
+                </Grid></Border>
+            </Grid>
+            <Grid x:Name="ActionOverlay" Visibility="Collapsed" Background="#400F1B31"><Border Width="410" Margin="24" Background="{DynamicResource ActionSurface}" CornerRadius="22" Padding="28" HorizontalAlignment="Center" VerticalAlignment="Center"><StackPanel>
+                <TextBlock x:Name="ActionTitle" FontSize="20" FontWeight="SemiBold"/><TextBlock x:Name="ActionDescription" TextWrapping="Wrap" Margin="0,12,0,18" Foreground="{DynamicResource TextSecondary}"/>
+                <TextBox x:Name="ActionInput" Style="{StaticResource GlassInput}" MaxLength="120"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,24,0,0"><Button Content="取消" Style="{StaticResource QuietButton}" Click="CancelAction_Click" Margin="0,0,8,0"/><Button x:Name="ConfirmActionButton" Content="保存" Style="{StaticResource PrimaryButton}" Click="ConfirmAction_Click"/></StackPanel>
+            </StackPanel></Border></Grid>
+        </Grid>
+        <Border x:Name="NoticePanel" Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="24,0,24,56" CornerRadius="12" Background="{DynamicResource ActionSurface}" BorderBrush="{DynamicResource InputBorder}" BorderThickness="1" Padding="18,12" MaxWidth="620"><TextBlock x:Name="NoticeText" TextWrapping="Wrap" Foreground="{DynamicResource TextPrimary}" FontSize="12"/></Border>
+        <Border x:Name="DragPreviousPage" Visibility="Collapsed" IsHitTestVisible="False" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="12,0" Width="52" Padding="5,10" CornerRadius="16" Background="{DynamicResource ActionSurface}" BorderBrush="{DynamicResource Accent}" BorderThickness="1">
+            <StackPanel><TextBlock Text="‹" FontSize="28" TextAlignment="Center"/><TextBlock Text="上一页" FontSize="10" TextAlignment="Center" Margin="0,0,0,8"/><Grid Width="30" Height="3" Background="{DynamicResource ControlBorder}"><Border x:Name="PreviousDwellBar" Width="0" HorizontalAlignment="Left" Background="{DynamicResource Accent}" CornerRadius="1.5"/></Grid></StackPanel>
+        </Border>
+        <Border x:Name="DragNextPage" Visibility="Collapsed" IsHitTestVisible="False" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="12,0" Width="52" Padding="5,10" CornerRadius="16" Background="{DynamicResource ActionSurface}" BorderBrush="{DynamicResource Accent}" BorderThickness="1">
+            <StackPanel><TextBlock Text="›" FontSize="28" TextAlignment="Center"/><TextBlock Text="下一页" FontSize="10" TextAlignment="Center" Margin="0,0,0,8"/><Grid Width="30" Height="3" Background="{DynamicResource ControlBorder}"><Border x:Name="NextDwellBar" Width="0" HorizontalAlignment="Left" Background="{DynamicResource Accent}" CornerRadius="1.5"/></Grid></StackPanel>
+        </Border>
+        <Canvas x:Name="DragOverlay" IsHitTestVisible="False">
+            <Border x:Name="DragPreview" Visibility="Collapsed" Width="100" Padding="12" CornerRadius="18" Background="{DynamicResource ActionSurface}" BorderBrush="{DynamicResource ControlBorder}" BorderThickness="1" Opacity=".9">
+                <StackPanel x:Name="DragPreviewContent"/>
+            </Border>
+        </Canvas>
+    </Grid>
+</Window>

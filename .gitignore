@@ -1,0 +1,14 @@
+.tools/
+**/bin/
+**/obj/
+artifacts/
+recovery/
+dist/
+.vs/
+*.user
+*.suo
+.launchpad/
+.playwright-mcp/
+UI-DESIGN.md
+UI-IMPROVEMENTS.md
+*.log

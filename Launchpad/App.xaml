@@ -1,0 +1,9 @@
+<Application x:Class="Launchpad.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             ShutdownMode="OnExplicitShutdown">
+    <Application.Resources>
+        <SolidColorBrush x:Key="TextPrimary" Color="#F7F7F4" />
+        <SolidColorBrush x:Key="Accent" Color="#79D7A7" />
+    </Application.Resources>
+</Application>
