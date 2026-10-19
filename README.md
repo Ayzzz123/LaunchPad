@@ -2,6 +2,17 @@
 
 面向 Windows 11 的悬浮式应用启动台。按 `Alt+空格` 打开，也可以单击系统托盘图标；窗口显示在鼠标所在屏幕，点击其他应用或空白区域即可收起。
 
+![LaunchPad 主界面](docs/preview/hero.png)
+
+## 预览
+
+| | |
+|:---:|:---:|
+| ![主界面](docs/preview/home.png) | ![即时搜索](docs/preview/search.png) |
+| ![整理模式](docs/preview/edit.png) | ![项目管理](docs/preview/settings.png) |
+
+> 预览图取自启动台自身的界面渲染（WPF 视觉树），未包含 Windows 桌面模糊与壁纸合成，实际毛玻璃效果取决于系统主题与壁纸。
+
 ## 安装
 
 1. 从 [Releases](https://github.com/Ayzzz123/LaunchPad/releases/latest) 下载 `Launchpad-win-x64.zip`。
